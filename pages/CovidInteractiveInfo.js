@@ -12,6 +12,7 @@ import {
   Chip,
   Button,
   Card,
+  Stack,
   MenuList,
   Box,
   Autocomplete,
@@ -103,6 +104,8 @@ export default function CovidInteractiveInfo(props) {
   let myFilteredByProvince = [];
   let myTotalDeaths = 0;
   let myFilteredTotalDeaths = 0;
+  let myFilteredCountyDeaths = 0;
+  let myFilteredProvinceDeaths = 0;
 
 
   function colorByLength(_list) {
@@ -114,10 +117,14 @@ export default function CovidInteractiveInfo(props) {
 
   const makeFilteredListWith = (_list, _field, _this) => {
     myList.forEach((item) => {
-      if (!myCounties.includes(item.county)) myCounties.push(item.county);
-      if (!myProvinces.includes(item.province)) myProvinces.push(item.province);
+      if (!myCounties.includes(item.county)) {
+          myCounties.push(item.county);
+      }
+      if (!myProvinces.includes(item.province)) {
+           myProvinces.push(item.province);
+      }
       if (item[_field]) {
-          console.log(item.stats.deaths);
+//          console.log(item.stats.deaths);
           myTotalDeaths += item.stats.deaths;
       }
       if (item[_field] === _this) {
@@ -125,6 +132,13 @@ export default function CovidInteractiveInfo(props) {
         myFilteredList.push(item);
         try {
           myFilteredTotalDeaths += item.stats.deaths;
+        if (item[_field] === mySelectedCounty && mySelectedCounty !== null) {
+            myFilteredCountyDeaths += item.stats.deaths
+        }
+          if (item[_field]   && mySelectedProvince !== null) {
+              myFilteredProvinceDeaths += item.stats.deaths
+          }
+
         } catch (err) {
           console.log("error = ", err);
         }
@@ -184,7 +198,7 @@ export default function CovidInteractiveInfo(props) {
       </Paper>
       <Divider />
 
-      <Paper sx={{ width: "100%" }}>
+     <Paper sx={{ width: "100%" }}>
       <Card variant="outlined">
       <CardContent>
 
@@ -235,10 +249,29 @@ export default function CovidInteractiveInfo(props) {
       <Chip style={{ fontSize: 20}}
         variant="outlined"
         label={
-          myFilteredTotalDeaths.toLocaleString() +
-          "Filtered deaths"
+          myFilteredCountyDeaths.toLocaleString() +
+          " deaths in " +  mySelectedCounty + " County"
         }
       />
+
+
+      <Chip style={{ fontSize: 20}}
+        variant="outlined"
+        label={
+          myFilteredProvinceDeaths.toLocaleString() +
+          " deaths in " +  mySelectedProvince + " State"
+        }
+      />
+
+
+      <Chip style={{ fontSize: 20}}
+        variant="outlined"
+        label={
+          myTotalDeaths.toLocaleString() +
+          " deaths in all"
+        }
+      />
+
 
         </CardContent>
         </Card>
@@ -253,41 +286,21 @@ export default function CovidInteractiveInfo(props) {
                                    borderColor: "red",
                                    margin: 2,
                                  }}>
-        <Card>
-        <CardContent>
-
-      <Chip
-        variant="outlined"
-        label={
-          myList.length.toLocaleString() +
-          " Items In List"
-        }
-      />
-
-      <Chip
-        variant="outlined"
-        label={
-          myTotalDeaths.toLocaleString() +
-          " Total Deaths In List"
-        }
-      />
-        </CardContent>
-        </Card>
 
         </Paper>
        <Paper          style={{
                          maxHeight: 300,
                          maxWidth: 300,
                          overflow: "auto",
-                         borderWidth: "20px",
-                         borderColor: "red",
                          margin: 2,
                        }}>
 
-      <Card variant="outlined" style={{ gap: 2, border: "10px solid red" }}>
+
+      <Card variant="outlined" sx = {{ width: "1800px", padding: "20px", margin: 1 }}>
       <CardContent>
       <Typography variant="h6">Provinces - States  </Typography>
       <Autocomplete
+        size="small"
         sx={{ width: "200px" }}
         options={myProvinceList}
         renderInput={(listitem) => <TextField {...listitem} />}
@@ -298,6 +311,7 @@ export default function CovidInteractiveInfo(props) {
       />
       <Typography variant="h6">Counties  </Typography>
       <Autocomplete
+        size="small"
         sx={{ width: "200px" }}
         options={myCountyList}
         renderInput={(listitem) => <TextField {...listitem} />}
@@ -309,18 +323,42 @@ export default function CovidInteractiveInfo(props) {
       </CardContent>
       </Card>
         </Paper>
+
+
        <Box >
+               <Card>
+               <CardContent>
+             <Chip
+               variant="outlined"
+               label={
+                 myList.length.toLocaleString() +
+                 " Items In List"
+               }
+             />
+
+             <Chip
+               variant="outlined"
+               label={
+                 myTotalDeaths.toLocaleString() +
+                 " Total Deaths In List"
+               }
+             />
+               </CardContent>
+               </Card>
+
        </Box>
-      <Card>
-                <Button
-                        onClick={() => {
-                          {
-                            setMySelectedCounty(null);
-                          }
-                        }}
-                      >
-                        reset counties
-                      </Button>
+
+      <Card       sx = {{ width: "600px", padding: "20px", margin: 2 }}>
+
+        <Button
+                onClick={() => {
+                  {
+                    setMySelectedCounty(null);
+                  }
+                }}
+              >
+                reset counties
+          </Button>
           <Button
             onClick={() => {
               {
@@ -330,15 +368,17 @@ export default function CovidInteractiveInfo(props) {
           >
             reset provinces / states
           </Button>
+
+        </Card>
+
+        <Stack orientation="horizontal" spacing={2} maxWidth="900px">
         <Typography>Counties</Typography>
 
         <Paper
           style={{
             maxHeight: 120,
-            maxWidth: 300,
+            maxWidth: 400,
             overflow: "auto",
-            borderWidth: "20px",
-            borderColor: "red",
             margin: "5px",
           }}>
           <CountyList list={myCountyList} />
@@ -347,10 +387,8 @@ export default function CovidInteractiveInfo(props) {
         <Paper
           style={{
             maxHeight: 120,
-            maxWidth: 300,
+            maxWidth: 400,
             overflow: "auto",
-            borderWidth: "20px",
-            borderColor: "red",
             margin: "5px",
           }}
         >
@@ -358,7 +396,9 @@ export default function CovidInteractiveInfo(props) {
         <Divider />
           <ProvinceList list={myProvinceList} />
         </Paper>
-        </Card>
+
+        </Stack>
+
 
         <Paper
           style={{
@@ -369,7 +409,7 @@ export default function CovidInteractiveInfo(props) {
             maxHeight: myFilteredList.length * 100.0,
             overflow: "auto",
             borderWidth: "20px",
-            borderColor: "red",
+            borderColor: "darkgrey",
             margin: "50px",
           }}
         >
@@ -401,10 +441,12 @@ export default function CovidInteractiveInfo(props) {
             margin: "5px",
           }}
         >
+
+
       <Box>
         <p>{JSON.stringify(data)}</p>
       </Box>
-        </Paper>
+    </Paper>
 
 
 
