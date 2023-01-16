@@ -29,8 +29,6 @@ export default function Home() {
 
 
           <CovidInfo />
-          <StuffList/ >
-          <NewStuffList />
         </div>
       </main>
 
