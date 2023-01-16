@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
-//import Header from "./Header";
+import Header from "./Header";
 //import StuffList from "./StuffList";
 //import NewStuffList from "./NewStuffList";
 import ZinnoFooter from "./ZinnoFooter";
