@@ -1,10 +1,10 @@
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
-import Header from "./Header";
-import StuffList from "./StuffList";
-import NewStuffList from "./NewStuffList";
+//import Header from "./Header";
+//import StuffList from "./StuffList";
+//import NewStuffList from "./NewStuffList";
 import ZinnoFooter from "./ZinnoFooter";
-import FavColor from "./FavColor";
+//import FavColor from "./FavColor";
 // import ZinnoIframe from "./ZinnoIframe";
 import CovidInfo from "./CovidInfo";
 // import MapChartExample from "./MapChartExample";
